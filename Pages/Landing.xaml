@@ -18,9 +18,9 @@
         <TextBlock Grid.Row="1" Name="tbTitle" Text="Sudoku" VerticalAlignment="Top" HorizontalAlignment="Center" FontSize="32" FontWeight="Bold" Margin="0,12,0,0"></TextBlock>
 
         <UniformGrid x:Name="navGrid" ButtonBase.Click="navGrid_Click" Grid.Row="2" Height="270" HorizontalAlignment="Center" VerticalAlignment="Center" Columns="1" Rows="0" Width="200">
-            <n:NavButton NavUri="/Pages/Info.xaml" Width="150" Height="50">Start</n:NavButton>
-            <n:NavButton NavUri="/Pages/Info.xaml" Width="150" Height="50">Info</n:NavButton>
-            <n:NavButton x:Name="btnExit" Width="150" Height="50" TextBlock.FontSize="18" Click="btnExit_Click">Exit</n:NavButton>
+            <n:NavButton NavUri="/Pages/Game.xaml" Width="150" Height="50" HorizontalContentAlignment="Center">Start</n:NavButton>
+            <n:NavButton NavUri="/Pages/Info.xaml" Width="150" Height="50" HorizontalContentAlignment="Center">Info</n:NavButton>
+            <n:NavButton x:Name="btnExit" Width="150" Height="50" TextBlock.FontSize="18" Click="btnExit_Click" HorizontalContentAlignment="Center">Exit</n:NavButton>
         </UniformGrid>
     </Grid>
 </Page>
