@@ -51,10 +51,12 @@ namespace SudokuSolver.Pages
 
         private void RemoveNumbersFromSolution()
         {
+            Random rand = new Random();
             int numbersRemoved = 0;
-            int numbersToRemove = 43;
+            int numbersToRemove = rand.Next(46, 55);
+            int maxAttempts = 1000;
 
-            while (numbersRemoved < numbersToRemove)
+            while (numbersRemoved < numbersToRemove && maxAttempts != 0)
             {
                 int row = rand.Next(0, 9);
                 int col = rand.Next(0, 9);
@@ -69,10 +71,12 @@ namespace SudokuSolver.Pages
                     if(solutions != 1)
                     {
                         Board[row][col] = backup;
+                        maxAttempts--;
                     }
                     else
                     {
                         numbersRemoved++;
+                        maxAttempts = 1000;
                     }
                 }
             }
