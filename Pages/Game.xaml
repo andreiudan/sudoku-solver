@@ -7,9 +7,9 @@
       xmlns:n="clr-namespace:SudokuSolver.UserControls"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="Game">
+      Title="Game" Loaded="Game_Loaded">
 
-    <Grid>
+    <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="194*"/>
             <RowDefinition Height="31*"/>
@@ -17,9 +17,6 @@
 
         <!-- GameGrid -->
         <DataGrid Margin="12" HeadersVisibility="None" Name="dataGridGame">
-            <DataGrid.Columns/>
-
-
         </DataGrid>
         
         <!-- Buttons -->
