@@ -16,11 +16,10 @@
         </Grid.RowDefinitions>
 
         <!-- GameGrid -->
-        <DataGrid Margin="12" HeadersVisibility="None" Name="dataGridGame">
-        </DataGrid>
-        
+        <n:SudokuBoard Margin="12" Background="AliceBlue" Board="{Binding SudokuBoard}" x:Name="board"/>
+
         <!-- Buttons -->
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" Margin="12 0 12 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>

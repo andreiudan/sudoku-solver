@@ -42,4 +42,8 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style TargetType="{x:Type local:SudokuBoard}">
+        <Setter Property="Background" Value="AntiqueWhite"/>
+    </Style>
 </ResourceDictionary>
