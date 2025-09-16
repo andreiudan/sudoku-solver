@@ -16,7 +16,7 @@
         </Grid.RowDefinitions>
 
         <!-- GameGrid -->
-        <n:SudokuBoard Margin="12" Background="AliceBlue" Board="{Binding SudokuBoard}" x:Name="board"/>
+        <n:SudokuBoard Margin="12" Background="AliceBlue" Board="{Binding Board}" x:Name="board"/>
 
         <!-- Buttons -->
         <Grid Grid.Row="1" Margin="12 0 12 0">

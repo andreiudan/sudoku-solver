@@ -1,18 +1,19 @@
-﻿using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace SudokuSolver.Pages
 {
     public partial class Game : Page
     {
-        public int[][] SudokuBoard { get; set; }
-
-        Random rand = new Random();
+        public Cell[,] Board { get; set; } = new Cell[9, 9];
+        private Random rand = new Random();
 
         public Game()
         {
             InitializeComponent();
+            InitializeBoard();
+            DataContext = this;
         }
 
         private async void Game_Loaded(object sender, RoutedEventArgs e)
@@ -22,30 +23,37 @@ namespace SudokuSolver.Pages
             await Task.Run(GenerateBoard);
 
             btnSolve.IsEnabled = true;
-
-            board.Refresh(SudokuBoard);
         }
 
         private async void btnSolve_Click(object sender, RoutedEventArgs e)
         {
             await Task.Run(Solve);
-
-            board.Refresh(SudokuBoard);
+        }
+        
+        private void InitializeBoard()
+        {
+            for (int row = 0; row < 9; row++)
+            {
+                for (int col = 0; col < 9; col++)
+                {
+                    Board[row, col] = new Cell { Value = 0 };
+                }
+            }
         }
 
         private bool Solve()
         {
             bool isSolved = false;
 
-            for(int row = 0; row < 9 && !isSolved; row++)
+            for (int row = 0; row < 9 && !isSolved; row++)
             {
-                for(int col = 0; col < 9 && !isSolved; col++)
+                for (int col = 0; col < 9 && !isSolved; col++)
                 {
-                    if(SudokuBoard[row][col] != 0)
+                    if (Board[row, col].Value != 0)
                     {
                         continue;
                     }
-                    
+
                     isSolved = FillCell(row, col);
                 }
             }
@@ -55,7 +63,6 @@ namespace SudokuSolver.Pages
 
         private void RemoveNumbersFromSolution()
         {
-            Random rand = new Random();
             int numbersRemoved = 0;
             int numbersToRemove = rand.Next(46, 55);
             int maxAttempts = 1000;
@@ -65,16 +72,16 @@ namespace SudokuSolver.Pages
                 int row = rand.Next(0, 9);
                 int col = rand.Next(0, 9);
 
-                if(SudokuBoard[row][col] != 0)
+                if (Board[row, col].Value != 0)
                 {
-                    int backup = SudokuBoard[row][col];
+                    int backup = Board[row, col].Value;
 
-                    SudokuBoard[row][col] = 0;
+                    Board[row, col].Value = 0;
                     int solutions = CountSolutions(0, 0);
 
-                    if(solutions != 1)
+                    if (solutions != 1)
                     {
-                        SudokuBoard[row][col] = backup;
+                        Board[row, col].Value = backup;
                         maxAttempts--;
                     }
                     else
@@ -88,14 +95,14 @@ namespace SudokuSolver.Pages
 
         private int CountSolutions(int row, int col, int limit = 2)
         {
-            if(row > 8)
+            if (row > 8)
             {
                 return 1;
             }
 
-            if(SudokuBoard[row][col] != 0)
+            if (Board[row, col].Value != 0)
             {
-                if(col < 8)
+                if (col < 8)
                 {
                     return CountSolutions(row, col + 1);
                 }
@@ -107,23 +114,23 @@ namespace SudokuSolver.Pages
 
             int solutionCounter = 0;
 
-            for(int i = 1; i <= 9; i++)
+            for (int i = 1; i <= 9; i++)
             {
-                if(IsValidEntry(row, col, i))
+                if (IsValidEntry(row, col, i))
                 {
                     int nextRow = col < 8 ? row : row + 1;
                     int nextCol = col < 8 ? col : 0;
 
-                    SudokuBoard[row][col] = i;
+                    Board[row, col].Value = i;
                     solutionCounter += CountSolutions(nextRow, nextCol);
 
-                    if(solutionCounter >= limit)
+                    if (solutionCounter >= limit)
                     {
-                        SudokuBoard[row][col] = 0;
+                        Board[row, col].Value = 0;
                         return solutionCounter;
                     }
 
-                    SudokuBoard[row][col] = 0;
+                    Board[row, col].Value = 0;
                 }
             }
 
@@ -132,18 +139,7 @@ namespace SudokuSolver.Pages
 
         private void GenerateBoard()
         {
-            SudokuBoard = [ new int[9],
-                    new int[9],
-                    new int[9],
-                    new int[9],
-                    new int[9],
-                    new int[9],
-                    new int[9],
-                    new int[9],
-                    new int[9]];
-
             FillCell(0, 0);
-
             RemoveNumbersFromSolution();
         }
 
@@ -154,7 +150,7 @@ namespace SudokuSolver.Pages
                 return true;
             }
 
-            if(SudokuBoard[row][col] != 0)
+            if (Board[row, col].Value != 0)
             {
                 if (col < 8)
                 {
@@ -181,7 +177,7 @@ namespace SudokuSolver.Pages
 
                 if (IsValidEntry(row, col, nextNum))
                 {
-                    SudokuBoard[row][col] = nextNum;
+                    Board[row, col].Value = nextNum;
 
                     bool isGoodNum;
                     if (col < 8)
@@ -199,7 +195,7 @@ namespace SudokuSolver.Pages
                     }
                     else
                     {
-                        SudokuBoard[row][col] = 0;
+                        Board[row, col].Value = 0;
                         triedNums[nextNum] = true;
                         numsTried++;
                     }
@@ -228,7 +224,7 @@ namespace SudokuSolver.Pages
         {
             for (int col = 0; col < 9; col++)
             {
-                if (SudokuBoard[row][col] == insertedNum && col != colInsertedOn)
+                if (Board[row, col].Value == insertedNum && col != colInsertedOn)
                 {
                     return false;
                 }
@@ -241,7 +237,7 @@ namespace SudokuSolver.Pages
         {
             for (int row = 0; row < 9; row++)
             {
-                if (SudokuBoard[row][col] == insertedNum && row != rowInsertedOn)
+                if (Board[row, col].Value == insertedNum && row != rowInsertedOn)
                 {
                     return false;
                 }
@@ -259,7 +255,7 @@ namespace SudokuSolver.Pages
             {
                 for (int col = startCol; col < startCol + 3; col++)
                 {
-                    if (SudokuBoard[row][col] == insertedNum && row != rowInsertedOn && col != colInsertedOn)
+                    if (Board[row, col].Value == insertedNum && row != rowInsertedOn && col != colInsertedOn)
                     {
                         return false;
                     }

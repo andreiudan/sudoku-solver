@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 
 namespace SudokuSolver.UserControls
@@ -9,13 +10,13 @@ namespace SudokuSolver.UserControls
         public static readonly DependencyProperty BoardProperty =
         DependencyProperty.Register(
             nameof(Board),
-            typeof(int[][]),
+            typeof(Cell[,]),
             typeof(SudokuBoard),
             new PropertyMetadata(null, OnBoardChanged));
 
-        public int[][] Board
+        public Cell[,] Board
         {
-            get => (int[][])GetValue(BoardProperty);
+            get => (Cell[,])GetValue(BoardProperty);
             set => SetValue(BoardProperty, value);
         }
 
@@ -31,6 +32,7 @@ namespace SudokuSolver.UserControls
         private static void OnBoardChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = (SudokuBoard)d;
+            control.Board = (Cell[,])e.NewValue;
             control.BuildCells();
         }
 
@@ -44,7 +46,6 @@ namespace SudokuSolver.UserControls
                 {
                     TextBox tb = new TextBox
                     {
-                        Text = Board[row][col] == 0 ? "" : Board[row][col].ToString(),
                         HorizontalContentAlignment = HorizontalAlignment.Center,
                         VerticalContentAlignment = VerticalAlignment.Center,
                         FontSize = 20,
@@ -60,27 +61,16 @@ namespace SudokuSolver.UserControls
                     SetRow(tb, row);
                     SetColumn(tb, col);
 
-                    tb.TextChanged += (s, e) =>
+                    tb.SetBinding(TextBox.TextProperty, new Binding("Value")
                     {
-                        int modifiedRow = GetRow(tb);
-                        int modifiedCol = GetColumn(tb);
-
-                        if (int.TryParse(tb.Text, out int value))
-                            Board[modifiedRow][modifiedCol] = value;
-                        else
-                            Board[modifiedRow][modifiedCol] = 0;
-                    };
+                        Source = Board[row, col],
+                        Mode = BindingMode.TwoWay,
+                        UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                    });
 
                     Children.Add(tb);
                 }
             }
-        }
-
-        public void Refresh(int[][] NewBoard)
-        {
-            Board = NewBoard;
-
-            BuildCells();
         }
     }
 }
